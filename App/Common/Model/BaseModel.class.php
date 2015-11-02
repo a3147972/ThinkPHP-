@@ -10,6 +10,7 @@ use Think\Model;
 
 class BaseModel extends Model
 {
+    protected $selectFields = '';
     /**
      * 查询多条数据
      * @method _list
@@ -23,7 +24,9 @@ class BaseModel extends Model
     public function _list($map = array(), $field = '', $order = '', $page = 0, $page_size = 10)
     {
         $pk = $this->pk; //主键
+        $fields = empty($fields) ? $this->selectFields : $fields;
         $order = empty($order) ? $pk . ' desc' : $order;
+
         if ($page === 0) {
             $list = $this->where($map)->field($field)->order($order)->select();
         } else {
@@ -46,7 +49,9 @@ class BaseModel extends Model
     public function _get($map = array(), $field = '', $order = '')
     {
         $pk = $this->pk; //主键
+        $fields = empty($fields) ? $this->selectFields : $fields;
         $order = empty($order) ? $pk . ' desc' : $order;
+
         $find = $this->where($map)->field($field)->order($order)->find();
         $find = empty($find) ? array() : $find;
         return $find;

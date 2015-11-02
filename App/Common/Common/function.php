@@ -1,23 +1,4 @@
 <?php
-//获取当前时间，格式年-月-日 时:分:秒
-function now()
-{
-    return date('Y-m-d H:i:s', time());
-}
-/**
- * 上传图片路径格式化
- * @method ImgReviewPath
- * @param  原始路径        $path 图片实际路径
- */
-function ImgReviewPath($path)
-{
-    $root = __ROOT__;
-
-    $path = file_exists($path) ? (empty($root) ? '' : $root . '/') . ltrim($path, '.') : $root . '/Public/assets/img/no-images.png';
-
-    return $path;
-}
-
 //兼容array_column
 if (!function_exists('array_column')) {
     function array_column(array $array, $column_key, $index_key = null)

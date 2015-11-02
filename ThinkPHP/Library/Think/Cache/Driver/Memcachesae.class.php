@@ -27,35 +27,26 @@ class Memcachesae extends Cache {
      * @access public
      */
     function __construct($options=array()) {
-        //[sae] 下不用判断memcache是否存在
-        // if ( !extension_loaded('memcache') ) {
-        //     throw_exception(L('_NOT_SUPPERT_').':memcache');
-        // }
-        if(empty($options)) {
-            $options = array (
-                'host'        =>  C('MEMCACHE_HOST') ? C('MEMCACHE_HOST') : '127.0.0.1',
-                'port'        =>  C('MEMCACHE_PORT') ? C('MEMCACHE_PORT') : 11211,
-                'timeout'     =>  C('DATA_CACHE_TIMEOUT') ? C('DATA_CACHE_TIMEOUT') : false,
-                'persistent'  =>  false,
-            );
-        }
+        $options = array_merge(array (
+            'host'        =>  C('MEMCACHE_HOST') ? : '127.0.0.1',
+            'port'        =>  C('MEMCACHE_PORT') ? : 11211,
+            'timeout'     =>  C('DATA_CACHE_TIMEOUT') ? : false,
+            'persistent'  =>  false,
+        ),$options);
+
         $this->options      =   $options;
         $this->options['expire'] =  isset($options['expire'])?  $options['expire']  :   C('DATA_CACHE_TIME');
         $this->options['prefix'] =  isset($options['prefix'])?  $options['prefix']  :   C('DATA_CACHE_PREFIX');
         $this->options['length'] =  isset($options['length'])?  $options['length']  :   0;
-      //  $func               =   isset($options['persistent']) ? 'pconnect' : 'connect';
-        $this->handler      =  memcache_init();//[sae] 下实例化
+         $this->handler      =  memcache_init();//[sae] 下实例化
         //[sae] 下不用链接
         $this->connected=true;
-        // $this->connected    =   $options['timeout'] === false ?
-        //     $this->handler->$func($options['host'], $options['port']) :
-        //     $this->handler->$func($options['host'], $options['port'], $options['timeout']);
     }
 
     /**
      * 是否连接
      * @access private
-     * @return boolen
+     * @return boolean
      */
     private function isConnected() {
         return $this->connected;
@@ -78,7 +69,7 @@ class Memcachesae extends Cache {
      * @param string $name 缓存变量名
      * @param mixed $value  存储数据
      * @param integer $expire  有效时间（秒）
-     * @return boolen
+     * @return boolean
      */
     public function set($name, $value, $expire = null) {
         N('cache_write',1);
@@ -100,7 +91,7 @@ class Memcachesae extends Cache {
      * 删除缓存
      * @access public
      * @param string $name 缓存变量名
-     * @return boolen
+     * @return boolean
      */
     public function rm($name, $ttl = false) {
         $name   =   $_SERVER['HTTP_APPVERSION'].'/'.$this->options['prefix'].$name;
@@ -112,7 +103,7 @@ class Memcachesae extends Cache {
     /**
      * 清除缓存
      * @access public
-     * @return boolen
+     * @return boolean
      */
     public function clear() {
         return $this->handler->flush();
